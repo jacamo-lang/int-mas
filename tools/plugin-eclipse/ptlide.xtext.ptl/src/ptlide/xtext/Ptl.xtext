@@ -1,0 +1,190 @@
+grammar ptlide.xtext.Ptl hidden(WS,SL_COMMENT,ML_COMMENT)
+
+generate ptl "http://www.xtext.ptlide/Ptl"
+
+import "http://www.eclipse.org/emf/2002/Ecore" as ecore
+
+Protocol:
+	TK_PROTOCOL name=ID '{'
+		description=Description
+		goals=Goals
+		participants=Participants
+		states=States
+		transitions=Transitions
+	'}';
+
+
+Transitions:
+	name=TK_TRANSITIONS ':' transitions+=Transition+
+;
+
+Transition:
+	sourceState=StateId '-' destinationState=StateId '#' type=TransitionType
+;
+
+TransitionType:
+	type=Occurrence | type=Timeout | type=Import
+;
+
+Timeout:
+	name=TK_TIMEOUT timeout=INTEGER ';'
+;
+
+Import:
+	name=TK_IMPORT file=STRING mapping=Mapping? ';'
+;
+
+Mapping:
+	name=TK_MAPPING '{' maps+=MapFromTo+ '}'
+;
+
+MapFromTo:
+	from=ParticipantId to=ParticipantId ';'
+;
+
+Trigger:{Trigger}
+	(
+		pattern=Pattern content=Content?
+	|
+		content=Content
+	) ';'
+;
+
+Pattern:
+	name=TK_TRIGGER pattern=STRING
+;
+
+Content:
+	':' content=STRING
+;
+
+Occurrence:
+	participantSource=ParticipantOccurrence '--' duty=Duty '->' participantDestination=ParticipantOccurrence
+	(trigger+=Trigger+ | ';')
+;
+
+Duty:
+	dutytype=DutyType duty=STRING
+;
+
+DutyType:{DutyType}
+	(name=TK_EVENT | name=TK_ACTION | name=TK_MESSAGE '[' performative=ID ']')
+;
+
+ParticipantOccurrence:
+	participantSource=ParticipantId ('[' cardinality=INTEGER ']')?
+;
+
+States:
+	name=TK_STATES ':' states+=State+
+;
+
+State:
+	id=StateId type=StateType ';'
+;
+
+StateId:
+	name=ID
+;
+
+StateType:{StateType}
+	(initial=TK_INITIAL | final=TK_FINAL)?
+;
+
+Participants:
+	name=TK_PARTICIPANTS ':' participants+=Participant+
+;
+
+Participant:
+	name=ParticipantId participantDescription=ParticipantDescription ';'
+;
+
+ParticipantId:
+	name=ID
+;
+
+ParticipantDescription:
+	(
+		kind=TK_AGENT role=Role |
+		kind=TK_ARTIFACT type=Type
+	) 
+	card=ParticipantCardinality
+;
+
+ParticipantCardinality:{ParticipantCardinality}
+	cardAll=ParticipantCardinalityAll | cardMinMax=ParticipantCardinalityMinMax
+;
+
+ParticipantCardinalityMinMax:{ParticipantCardinalityMinMax}
+	min=ParticipantCardinalityMin? max=ParticipantCardinalityMax?
+;
+
+ParticipantCardinalityMin:
+	name=TK_MIN min=INTEGER
+;
+
+ParticipantCardinalityMax:
+	name=TK_MAX (max=INTEGER | max2=TK_PLUS)
+;
+
+ParticipantCardinalityAll:
+	name=TK_ALL
+;
+
+Type:
+	type=STRING
+;
+
+Role:
+	role=STRING
+;
+
+Description:{Description}
+	(name=TK_DESCRIPTION ':' description=STRING ';')?
+;
+
+Goals:
+	name=TK_GOALS ':' goals+=Goal+
+;
+
+Goal:
+	goal=STRING ';'
+;
+
+/* TOKENS */
+TK_PROTOCOL: 'protocol'; //ok
+TK_DESCRIPTION: 'description'; //ok
+TK_GOALS: 'goals'; //ok
+TK_PARTICIPANTS: 'participants'; //ok
+TK_AGENT: 'agent'; //ok
+TK_ARTIFACT: 'artifact'; //ok
+TK_MAX: 'max'; //ok
+TK_MIN: 'min'; //ok
+TK_STATES: 'states'; //ok
+TK_INITIAL: 'initial'; //ok
+TK_FINAL: 'final'; //ok
+TK_TRANSITIONS: 'transitions'; //ok
+TK_TIMEOUT: 'timeout'; //ok
+TK_MESSAGE: 'message'; //ok
+TK_ACTION: 'action'; //ok
+TK_EVENT: 'event'; //ok
+TK_TRIGGER: 'trigger'; //ok
+TK_IMPORT: 'import'; //ok
+TK_MAPPING: 'mapping'; //ok
+TK_ALL: 'all'; //ok
+TK_PLUS: '+'; //ok
+
+ID: ID_WITH_STARTING_LCLETTER ;
+
+terminal ID_WITH_STARTING_LCLETTER: '^'?('a'..'z'|'_') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')*;
+terminal STRING: '"' ( '\\' ('b'|'t'|'n'|'f'|'r'|'"'|"'"|'\\') | !('\\'|'"') )* '"';
+terminal INTEGER returns ecore::EInt : INTEGER_NUMBER;
+
+terminal fragment INTEGER_NUMBER
+    :   
+	    	'0' | ('1'..'9' ('0'..'9')*)    
+    ;
+
+terminal WS : (' '|'\t'|'\r'|'\n')+;	
+terminal ML_COMMENT : '/*' -> '*/';
+terminal SL_COMMENT : '//' !('\n'|'\r')* ('\r'? '\n')?;

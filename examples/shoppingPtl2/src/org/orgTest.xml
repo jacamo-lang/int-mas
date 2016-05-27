@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<organisational-specification 
+    id="joj"
+    os-version="0.6"
+    xmlns='http://moise.sourceforge.net/os'
+    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+    xsi:schemaLocation='http://moise.sourceforge.net/os http://moise.sourceforge.net/xml/os.xsd'>
+    <structural-specification>
+        <role-definitions>
+            <role id="client" />
+            <role id="seller" />
+            <role id="cashier" />
+            <role id="manager" />
+        </role-definitions>
+        
+        <group-specification id="groupStore">
+            <roles>
+                <role id="client" min="0"/>
+                <role id="seller" min="0"/>
+                <role id="cashier" min="0"/>
+                <role id="manager" min="0"/>
+            </roles> 
+            
+			<formation-constraints>
+				<compatibility from="seller" to="cashier" type="compatibility"
+					scope="intra-group" extends-subgroups="false"
+					bi-dir="true"/>
+			</formation-constraints>
+        </group-specification>
+    </structural-specification>
+    
+    <functional-specification>
+        <scheme id="contractNetScheme" >
+            <goal id="g9" min="1" ds="Buy goods" />
+            <mission id="m1" min="0" >
+                <goal id="g9" />
+            </mission>
+        </scheme>
+    </functional-specification>
+     <normative-specification>
+        <norm id="n1" type="obligation" role="client" mission="m1" />
+    </normative-specification>
+</organisational-specification>
+

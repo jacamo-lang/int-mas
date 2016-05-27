@@ -1,0 +1,19 @@
+protocol operatorProtocol {
+  description: "Tell the agent how to work with some machine";
+  goals: "g9";
+  participants:
+    player1 agent "operator" all;
+    player2 artifact "artifacts.Machine" all;
+  states:
+    n1 initial;
+    //n2;n3;n4;
+    n5 final;
+  transitions:
+    n1 - n2 # player1[1] -- action "turnOn" -> player2;
+    n1 - n2 # timeout 100000;
+    n2 - n3 # player1 -- action "produce(X)" -> player2
+            : ".number(X)";
+    n3 - n2 # player2 -- event "ok" -> player1;
+    n3 - n4 # player2[1] -- event "alarm" -> player1[1];
+    n4 - n5 # player1[1] -- action "turnOff" -> player2;           
+}

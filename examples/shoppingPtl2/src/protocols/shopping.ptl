@@ -1,0 +1,41 @@
+protocol attending {
+  description: "Do a shopping";
+  goals: "g9";
+  participants:
+    agClient agent "client";
+    agSeller agent "seller";
+    groupBoard artifact "ora4mas.nopl.GroupBoard";
+    salesSystem artifact "artifacts.SalesSystem";
+    ept artifact "artifacts.EPT";
+  states:
+    k1 initial;
+    //k2;k3;k4;k5;k6;k7;k8;k9;k10;k11;k12;k13;k14;
+    k15 final;
+  transitions:
+    k1 - k2 # agClient -- message[askOne] "price(X,P)" -> agSeller;
+    k2 - k3 # agSeller -- message[tell] "price(X,P)" -> agClient
+            : ".number(P)";
+    k3 - k4 # agClient -- message[tell] "buy(X,A)" -> agSeller
+            : ".number(A)";
+    k4 - k5 # agSeller -- action "adoptRole(cashier)" -> groupBoard;
+    k5 - k6 # agSeller -- action "newSale(X,P,A)" -> salesSystem
+            trigger "newSale(X,P,A)" : ".number(P) & .number(A)";
+    k6 - k7 # salesSystem -- event "total(T)" -> agClient
+            trigger "total(T)";
+    k7 - k8 # agClient -- message[tell] "pay(W)" -> agSeller
+            trigger "pay(W)";
+    k8 - k9 # agSeller -- action "setClient(C)" -> salesSystem
+            trigger "setClient(C)" : ".atom(C)";
+    k9 - k10 # agSeller -- action "paymentForm(W)" -> salesSystem
+            trigger "paymentForm(W)";
+    k10 - k11 # ept -- event "askPassword" -> agClient
+            trigger "askPassword";
+    k11 - k12 # agClient -- action "password(PWD)" -> ept
+            trigger "password(PWD)";
+    k12 - k13 # ept -- event "successfull" -> agSeller
+            trigger "successfull";
+    k13 - k14 # agSeller -- action "finishSale" -> salesSystem
+            trigger "finishSale";
+    k14 - k15 # agSeller -- message[tell] "bye" -> agClient
+            trigger "bye";
+}

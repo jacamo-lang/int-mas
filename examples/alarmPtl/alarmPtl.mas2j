@@ -1,0 +1,20 @@
+MAS alarmPtl {
+
+	infrastructure: Centralised
+	
+	environment:
+		c4jason.CartagoEnvironment
+
+	agents:
+		bob operator agentArchClass int4mas.XCAgentArch;
+		cla operator agentArchClass int4mas.XCAgentArch;
+		toi operator agentArchClass int4mas.XCAgentArch;
+		joe operator agentArchClass int4mas.XCAgentArch;
+		lau operator agentArchClass int4mas.XCAgentArch;
+
+	classpath:
+		"/home/maicon/interaction.jar"; 
+
+	aslSourcePath:
+		"src/asl";
+}

@@ -1,0 +1,16 @@
+protocol election {
+  description: "Do an election";
+  goals: "g1";
+  participants:
+    player1 agent "elector" all;
+    player2 artifact "artifacts.BallotBox";
+  states:
+    n1 initial;
+    //n2;
+    n3 final;
+  transitions:
+    n1 - n2 # player1 -- action "vote(X)" -> player2
+    		  : ".atom(X)";
+    n1 - n2 # timeout 30000;
+    n2 - n3 # player2 -- event "winner(Y)" -> player1;
+}

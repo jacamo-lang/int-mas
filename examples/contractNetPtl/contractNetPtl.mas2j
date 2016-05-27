@@ -1,0 +1,21 @@
+MAS contractNetPtl {
+
+	infrastructure: Centralised
+	
+	environment:
+		c4jason.CartagoEnvironment
+
+	agents:
+		ana client agentArchClass int4mas.XCAgentArch;
+		bob seller agentArchClass int4mas.XCAgentArch;
+		cla seller agentArchClass int4mas.XCAgentArch;
+		toi seller agentArchClass int4mas.XCAgentArch;
+		joe seller agentArchClass int4mas.XCAgentArch;
+		lau seller agentArchClass int4mas.XCAgentArch;
+
+	classpath:
+		"/home/maicon/Programs/Jason-1.3.7/lib/interaction.jar"; 
+
+	aslSourcePath:
+		"src/asl";
+}

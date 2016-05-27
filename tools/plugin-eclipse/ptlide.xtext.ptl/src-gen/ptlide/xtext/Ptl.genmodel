@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/ptlide.xtext.ptl/src-gen"
+    editDirectory="/ptlide.xtext.ptl.edit/src" editorDirectory="/ptlide.xtext.ptl.editor/src"
+    modelPluginID="ptlide.xtext.ptl" forceOverwrite="true" modelName="Ptl" updateClasspath="false"
+    rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container" complianceLevel="5.0"
+    copyrightFields="false" editPluginID="ptlide.xtext.ptl.edit" editorPluginID="ptlide.xtext.ptl.editor"
+    runtimeVersion="2.7">
+  <genPackages prefix="Ptl" basePackage="ptlide.xtext" disposableProviderFactory="true"
+      ecorePackage="Ptl.ecore#/">
+    <genClasses ecoreClass="Ptl.ecore#//Protocol">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ptl.ecore#//Protocol/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ptl.ecore#//Protocol/description"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ptl.ecore#//Protocol/goals"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ptl.ecore#//Protocol/participants"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ptl.ecore#//Protocol/states"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ptl.ecore#//Protocol/transitions"/>
+    </genClasses>
+    <genClasses ecoreClass="Ptl.ecore#//Transitions">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ptl.ecore#//Transitions/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ptl.ecore#//Transitions/transitions"/>
+    </genClasses>
+    <genClasses ecoreClass="Ptl.ecore#//Transition">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ptl.ecore#//Transition/sourceState"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ptl.ecore#//Transition/destinationState"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ptl.ecore#//Transition/type"/>
+    </genClasses>
+    <genClasses ecoreClass="Ptl.ecore#//TransitionType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ptl.ecore#//TransitionType/type"/>
+    </genClasses>
+    <genClasses ecoreClass="Ptl.ecore#//Timeout">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ptl.ecore#//Timeout/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ptl.ecore#//Timeout/timeout"/>
+    </genClasses>
+    <genClasses ecoreClass="Ptl.ecore#//Import">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ptl.ecore#//Import/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ptl.ecore#//Import/file"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ptl.ecore#//Import/mapping"/>
+    </genClasses>
+    <genClasses ecoreClass="Ptl.ecore#//Mapping">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ptl.ecore#//Mapping/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ptl.ecore#//Mapping/maps"/>
+    </genClasses>
+    <genClasses ecoreClass="Ptl.ecore#//MapFromTo">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ptl.ecore#//MapFromTo/from"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ptl.ecore#//MapFromTo/to"/>
+    </genClasses>
+    <genClasses ecoreClass="Ptl.ecore#//Trigger">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ptl.ecore#//Trigger/pattern"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ptl.ecore#//Trigger/content"/>
+    </genClasses>
+    <genClasses ecoreClass="Ptl.ecore#//Pattern">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ptl.ecore#//Pattern/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ptl.ecore#//Pattern/pattern"/>
+    </genClasses>
+    <genClasses ecoreClass="Ptl.ecore#//Content">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ptl.ecore#//Content/content"/>
+    </genClasses>
+    <genClasses ecoreClass="Ptl.ecore#//Occurrence">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ptl.ecore#//Occurrence/participantSource"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ptl.ecore#//Occurrence/duty"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ptl.ecore#//Occurrence/participantDestination"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ptl.ecore#//Occurrence/trigger"/>
+    </genClasses>
+    <genClasses ecoreClass="Ptl.ecore#//Duty">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ptl.ecore#//Duty/dutytype"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ptl.ecore#//Duty/duty"/>
+    </genClasses>
+    <genClasses ecoreClass="Ptl.ecore#//DutyType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ptl.ecore#//DutyType/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ptl.ecore#//DutyType/performative"/>
+    </genClasses>
+    <genClasses ecoreClass="Ptl.ecore#//ParticipantOccurrence">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ptl.ecore#//ParticipantOccurrence/participantSource"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ptl.ecore#//ParticipantOccurrence/cardinality"/>
+    </genClasses>
+    <genClasses ecoreClass="Ptl.ecore#//States">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ptl.ecore#//States/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ptl.ecore#//States/states"/>
+    </genClasses>
+    <genClasses ecoreClass="Ptl.ecore#//State">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ptl.ecore#//State/id"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ptl.ecore#//State/type"/>
+    </genClasses>
+    <genClasses ecoreClass="Ptl.ecore#//StateId">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ptl.ecore#//StateId/name"/>
+    </genClasses>
+    <genClasses ecoreClass="Ptl.ecore#//StateType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ptl.ecore#//StateType/initial"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ptl.ecore#//StateType/final"/>
+    </genClasses>
+    <genClasses ecoreClass="Ptl.ecore#//Participants">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ptl.ecore#//Participants/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ptl.ecore#//Participants/participants"/>
+    </genClasses>
+    <genClasses ecoreClass="Ptl.ecore#//Participant">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ptl.ecore#//Participant/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ptl.ecore#//Participant/participantDescription"/>
+    </genClasses>
+    <genClasses ecoreClass="Ptl.ecore#//ParticipantId">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ptl.ecore#//ParticipantId/name"/>
+    </genClasses>
+    <genClasses ecoreClass="Ptl.ecore#//ParticipantDescription">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ptl.ecore#//ParticipantDescription/kind"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ptl.ecore#//ParticipantDescription/role"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ptl.ecore#//ParticipantDescription/type"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ptl.ecore#//ParticipantDescription/card"/>
+    </genClasses>
+    <genClasses ecoreClass="Ptl.ecore#//ParticipantCardinality">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ptl.ecore#//ParticipantCardinality/cardAll"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ptl.ecore#//ParticipantCardinality/cardMinMax"/>
+    </genClasses>
+    <genClasses ecoreClass="Ptl.ecore#//ParticipantCardinalityMinMax">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ptl.ecore#//ParticipantCardinalityMinMax/min"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ptl.ecore#//ParticipantCardinalityMinMax/max"/>
+    </genClasses>
+    <genClasses ecoreClass="Ptl.ecore#//ParticipantCardinalityMin">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ptl.ecore#//ParticipantCardinalityMin/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ptl.ecore#//ParticipantCardinalityMin/min"/>
+    </genClasses>
+    <genClasses ecoreClass="Ptl.ecore#//ParticipantCardinalityMax">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ptl.ecore#//ParticipantCardinalityMax/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ptl.ecore#//ParticipantCardinalityMax/max"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ptl.ecore#//ParticipantCardinalityMax/max2"/>
+    </genClasses>
+    <genClasses ecoreClass="Ptl.ecore#//ParticipantCardinalityAll">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ptl.ecore#//ParticipantCardinalityAll/name"/>
+    </genClasses>
+    <genClasses ecoreClass="Ptl.ecore#//Type">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ptl.ecore#//Type/type"/>
+    </genClasses>
+    <genClasses ecoreClass="Ptl.ecore#//Role">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ptl.ecore#//Role/role"/>
+    </genClasses>
+    <genClasses ecoreClass="Ptl.ecore#//Description">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ptl.ecore#//Description/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ptl.ecore#//Description/description"/>
+    </genClasses>
+    <genClasses ecoreClass="Ptl.ecore#//Goals">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ptl.ecore#//Goals/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ptl.ecore#//Goals/goals"/>
+    </genClasses>
+    <genClasses ecoreClass="Ptl.ecore#//Goal">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ptl.ecore#//Goal/goal"/>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>

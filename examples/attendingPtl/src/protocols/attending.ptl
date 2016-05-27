@@ -1,0 +1,17 @@
+protocol attending {
+  description: "Do an attending";
+  goals: "g9";
+  participants:
+    playerAttend1 agent "client";
+    playerAttend2 agent "seller" all;
+  states:
+    k1 initial;
+    //k2;
+    k3 final;
+  transitions:
+    k1 - k2 # playerAttend1 -- message[achieve] "requestSeller" -> playerAttend2;
+    k2 - k3 # import "./src/protocols/election.ptl"
+                       mapping {
+                         playerAttend2 player1;
+                       };
+}

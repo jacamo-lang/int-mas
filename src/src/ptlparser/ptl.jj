@@ -1,0 +1,751 @@
+/**
+ * JavaCC template file created by SF JavaCC plugin 1.5.17+ wizard for JavaCC 1.5.0+
+ */
+options
+{
+  JDK_VERSION = "1.5";
+  static = false;
+}
+
+PARSER_BEGIN(PtlParser)
+package ptlparser;
+
+import lib.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.File;
+import aux.Comandos;
+
+public class PtlParser
+{
+  private Protocol p;
+
+  private boolean protocolPart;
+  private String statePrefix;
+  private String stateSufix;
+  private Map<String, Participant> participantMap;
+  private Map<String, State> mapState;
+
+  private Map<String, Participant> map;
+  private State stateFrom;
+  private State stateTo;
+  private int level;
+
+  private boolean thereIsInitialState = false;
+  private boolean thereIsFinalState = false;
+  private boolean deliver = true;
+
+  private PtlParser parser;
+
+  public static Protocol loadProtocol(String file) throws Exception {
+	Protocol temp = PtlParser.loadComposedProtocol(file, null, null, null, null, 0);
+	
+	if (temp == null)
+		throw new Error("Compiler error.");
+
+	temp.setSpecification(Comandos.loadFile(file));
+	return temp;
+  }
+
+  public void setParser(PtlParser parser) {
+	this.parser = parser;
+  }
+
+  public void setProtocol(Protocol p) {
+	this.p = p;
+  }
+
+  public Protocol getProtocol() {
+    if (deliver)
+		return p;
+	return null;
+  }
+
+  public static Protocol loadComposedProtocol(String file, Protocol p, Map<String, Participant> map, State stateFrom, State stateTo, int level)  throws ParseException {
+	InputStream input;
+	try {
+		input = new FileInputStream(file);
+		PtlParser parserCmp = new PtlParser(input);
+		parserCmp.setParser(parserCmp);
+		parserCmp.setProtocol(p);
+		boolean success = parserCmp.loadComposedProtocol(map, stateFrom, stateTo, level);
+		if (success)
+			return parserCmp.getProtocol();
+		else
+			return null;
+	} catch (FileNotFoundException e1) {
+		e1.printStackTrace();
+	}
+	return null;
+  }
+  
+  public boolean loadComposedProtocol(Map<String, Participant> map, State stateFrom, State stateTo, int level)  throws ParseException {
+	protocolPart = stateFrom != null;
+	participantMap = new HashMap<String, Participant>();
+	if (stateFrom == null) {
+		stateSufix = "";
+		statePrefix = "";
+	} else {
+		stateSufix = "[" + stateFrom.getId() + "]";
+		statePrefix = "";
+		protocolPart = true;
+	}
+	mapState = new HashMap<String, State>();
+
+	this.map = map;
+	this.stateFrom = stateFrom;
+	this.stateTo = stateTo;
+	this.level = level;
+
+	  try
+	  {
+	    Protocol xp = parser.protocol();
+	    return deliver;
+	  }
+	  catch (Exception e)
+	  {
+	    System.out.println("Compiler error. " + level);
+	    System.out.println(e.getMessage());
+	  }
+	  catch (Error e)
+	  {
+	    System.out.println("Compiler error. " + level);
+	    System.out.println(e.getMessage());
+	  }
+	  return false;
+  }
+  
+  public static void main(String args []) throws Exception
+  {
+      if (args.length < 1) {
+    	  System.out.println("Inform the protocol file to compile.");
+      } else {
+    	  loadProtocol(args[0]);
+      }
+  }
+
+	private boolean validateCardinalityConsistence(Participant participant, String transitionCard) {
+		if (transitionCard.equals(""))
+			return true;
+		
+		String participantCard; 
+		
+		if (participant.getqMax() == null)
+			participantCard = String.valueOf(participant.getMax());
+		else
+			participantCard = participant.getqMax();
+		
+		return validateCardinalityConsistence(participantCard, transitionCard);
+	}
+	
+	private boolean validateCardinalityConsistence(String max, String min) {
+		if (min.equals(""))
+			return true;
+		
+		if (max.equals("all")) {
+			return true;
+		} else if (max.equals("+")) {
+			if (min.equals("all")) {
+				return false;
+			}
+		} else {
+			if (min.equals("all")) {
+				return false;
+			} else if (min.equals("+")) {
+				return true;
+			} else {
+				int iMax = Integer.valueOf(max);
+				int iMin = Integer.valueOf(min);
+				if (iMax < iMin)
+					return false;
+			}
+		}
+		
+		return true;
+	}
+
+	private String unQuote(String str) {
+        if (str.charAt(0) == '"' && str.charAt(str.length()-1) == '"' )
+                return str.substring(1, str.length()-1);
+        return str;
+	}
+}
+
+PARSER_END(PtlParser)
+
+SKIP : {
+ " "
+|  "\t"
+|  "\n"
+|  "\r"
+|  <"//" (~["\n","\r"])* ("\n" | "\r" | "\r\n")>
+|  <"/*" (~["*"])* "*" ("*" | ~["*","/"] (~["*"])* "*")* "/">
+}
+
+TOKEN : {
+
+// Keywords
+  < TK_PROTOCOL: "protocol" >
+| < TK_DESCRIPTION: "description" >
+| < TK_GOALS: "goals" >
+| < TK_PARTICIPANTS: "participants" >
+| < TK_AGENT: "agent" >
+| < TK_ARTIFACT: "artifact" >
+| < TK_MAX: "max" >
+| < TK_MIN: "min" >
+| < TK_STATES: "states" >
+| < TK_INITIAL: "initial" >
+| < TK_FINAL: "final" >
+| < TK_TRANSITIONS: "transitions" >
+| < TK_TIMEOUT: "timeout" >
+| < TK_MESSAGE: "message" >
+| < TK_ACTION: "action" >
+| < TK_EVENT: "event" >
+| < TK_TRIGGER: "trigger" >
+| < TK_IMPORT: "import" >
+| < TK_MAPPING: "mapping" >
+| < TK_ALL: "all" >
+| < TK_PLUS: "+" >
+
+// Integer
+|  < INTEGER: "0" | ["1"-"9"] (["0"-"9"])* >
+
+// Strings
+|  <STRING: 
+      "\""
+      (   (~["\"","\\","\n","\r"])
+        | ("\\"
+            ( ["n","t","b","r","f","\\","'","\""] )
+          )
+      )*
+      "\""
+  >
+
+// Identifiers
+|  <ID:   <LC_LETTER>    (<LETTER>|<DIGIT>|"_")* >
+|  <LETTER: ( <LC_LETTER> | <UP_LETTER> )>
+|  <LC_LETTER: ["a"-"z"]>
+|  <UP_LETTER: ["A"-"Z"]>
+|  <DIGIT: ["0"-"9"]>
+}
+
+Protocol protocol(): { Token name; }
+{
+  
+	< TK_PROTOCOL >
+	
+	name = < ID > 		{
+	  					if (!protocolPart) {
+	  						p = new Protocol();
+	  						p.setName(name.image);
+	  					}
+	  					}
+	"{"
+		description()
+		goals()
+		participants()
+		states()
+		transitions()
+	"}"
+	                    { return p; }
+}
+
+void transitions(): {}
+{
+	< TK_TRANSITIONS >
+	":"
+	(transition())+
+}
+
+void transition(): { Transition t = new Transition();
+					String sId;
+					String dId;
+					String sIdComplete;
+					String dIdComplete;
+					}
+{
+	sId = stateId()
+	"-"
+	dId = stateId()
+	"#"
+					{
+				        sIdComplete = statePrefix+sId+stateSufix;
+				        dIdComplete = statePrefix+dId+stateSufix;
+					   
+						State s;
+						State sNew;
+						if (!protocolPart || (protocolPart && !mapState.containsKey(sIdComplete))) {
+							s = p.getStateByName(sIdComplete);
+						} else {
+						  	//System.out.println("State mapped from " + sIdComplete + " to " + mapState.get(sIdComplete).getId());
+							s = mapState.get(sIdComplete);
+						}
+						if (s == null) {
+
+							sNew = new State(sIdComplete, 
+			    									false, 
+			    									false);
+							p.addState(sNew);
+							s = sNew;
+						  
+							//throw new Error("State "+sIdComplete+" does not exist.");
+						}
+
+						if (s.isFinalState()) {
+							throw new Error("The "+s.getId() +" is a final state. It does not allow transitions");
+						}
+				
+						State d;
+						if (!protocolPart || (protocolPart && !mapState.containsKey(dIdComplete))) {
+							d = p.getStateByName(dIdComplete);
+						} else {
+							d = mapState.get(dIdComplete);
+							//System.out.println("State d mapped from " + dIdComplete + " to " + mapState.get(dIdComplete).getId());
+						}
+						if (d == null) {
+
+							sNew = new State(dIdComplete, 
+			    									false, 
+			    									false);
+							p.addState(sNew);
+							d = sNew;
+						  
+							//throw new Error("State "+dIdComplete+" does not exist.");
+						}
+
+						t.setCurrentState(s);
+						t.setNextState(d);
+					}
+	transitionType(t)
+}
+
+void transitionType(Transition t): {}
+{
+	(
+	  occurrence(t)
+						  {
+						    t.getCurrentState().addTransition(t);
+						    p.addTransition(t);
+						  }
+	  |
+	  timeout(t)
+	  |
+	  importt(t)
+	)
+}
+
+void timeout(Transition t): { Token timeoutT; }
+{
+	< TK_TIMEOUT >
+	timeoutT = < INTEGER >
+				{
+				  t.setType(Transition.TIMEOUT);
+				  State s = t.getCurrentState();
+
+				  if (s.getGotoStateOnTimeout() != null) {
+				      throw new Error("Multiple timeout defined for the state " + s.getId() + ".");
+				  }
+				  
+				  State timeoutState = t.getNextState();
+				  s.setTimeout(Long.valueOf(Integer.parseInt(timeoutT.image)));
+				  s.setGotoStateOnTimeout(timeoutState);
+				  s.setTimeoutTransition(t);
+				}
+	";"
+}
+
+void importt(Transition t): { Token fileT; }
+{
+	< TK_IMPORT >
+	fileT = < STRING >
+	mapping()
+
+	{
+		State s = t.getCurrentState();
+		State toState = t.getNextState();
+		Protocol temp = PtlParser.loadComposedProtocol(unQuote(fileT.image), p, participantMap, s, toState, level+1);
+		if (temp == null)
+			deliver = false;
+	}
+	";"
+}
+
+void mapping(): {}
+{
+	< TK_MAPPING >
+	"{"
+	(mapFromTo())+
+	"}"
+}
+
+void mapFromTo(): {String from;
+				   String to;
+				  }
+{
+	from = mappingFrom()
+	to = mappingTo()
+	";"
+
+	{
+		Participant participantFrom;
+		if (!protocolPart || (protocolPart && !map.containsKey(from))) {
+			participantFrom = p.getParticipantByName(from);
+		} else {
+			participantFrom = map.get(from);
+		}
+		
+		if (participantFrom == null) {
+			throw new Error("Participant "+from+" does not exist.");
+		}
+		
+		participantMap.put(to, participantFrom);
+	}
+}
+
+String mappingFrom(): { String id; }
+{
+	id = participantId()
+					  { return id; }
+}
+
+String mappingTo(): { String id; }
+{
+	id = participantId()
+					{ return id; }
+}
+
+void trigger(Transition t): {
+  					String pattern = "";
+  					String content = "";
+  				}
+{
+    (
+		pattern = pattern()
+		(
+		  content = content()
+		)?
+	|
+		content = content()
+	)
+	";"
+				{
+				  t.addTransitionTrigger(new Trigger(pattern, content));
+				}
+}
+
+String pattern(): { Token patternT; }
+{
+    < TK_TRIGGER >
+	patternT = < STRING >
+				  { return unQuote(patternT.image); }
+}
+
+String content(): { Token contentT; }
+{
+	":"
+	contentT = < STRING >
+				  { return unQuote(contentT.image); }
+}
+
+void occurrence(Transition t): {}
+{
+	participantOccurrence(t, false)
+	"--"
+	duty(t)
+	"->"
+	participantOccurrence(t, true)
+	(
+		(trigger(t))+
+		|
+		";" 
+	)
+	{
+	  if (t.getTransitionTriggers().size() == 0)	  { 		t.addTransitionTrigger(new Trigger("", ""));
+	  }	}
+}
+ 
+void duty(Transition t): { Token dutyT; }
+{
+	dutyType(t)
+	dutyT = < STRING >
+						 {
+						   t.setDuty(unQuote(dutyT.image));
+						 }
+}
+
+void dutyType(Transition t): { Token typeT;
+							   Token performativeT = null;
+							 }
+{
+	(
+	  typeT = < TK_EVENT >
+	  |
+	  typeT = < TK_ACTION >
+	  |
+	  typeT = < TK_MESSAGE >
+	  "["
+	  performativeT = < ID >
+	  "]"
+	)
+
+	{
+	  String type = typeT.image;
+	  if (type.equals("message")) {
+		t.setType(Transition.MESSAGE);
+	  } else if (type.equals("action")) {
+		t.setType(Transition.ACTION);
+	  } else {
+	    t.setType(Transition.EVENT);
+	  }
+	  
+	  if (performativeT != null)
+	  	t.setPerformative(performativeT.image);
+	}
+}
+
+void participantOccurrence(Transition t, boolean destination):
+							{ String idPlayer;
+							  Token cardinalityT = null;							
+							}
+{
+	idPlayer = participantId()
+	(
+	  "["
+	  cardinalityT = < INTEGER >
+	  "]"
+	)?
+
+				{
+					Participant e;
+					if (protocolPart && map.containsKey(idPlayer)) {
+						e = map.get(idPlayer);
+					} else {
+						e = p.getParticipantByName(idPlayer);
+					}
+					if (e == null) {
+						throw new Error("Participant "+idPlayer+" does not exist.");
+					}
+					String cardinality;
+					if (cardinalityT == null)
+						cardinality = "";
+					else
+						cardinality = cardinalityT.image;
+					if (!validateCardinalityConsistence(e, cardinality)) {
+						throw new Error("There are inconsistence in the cardinality of the " + e.getId() + " with some transition.");
+					}
+
+					if (destination) {
+						t.setDestination(e);
+						if (!cardinality.equals(""))
+							t.setCardDestination(Integer.parseInt(cardinality));
+					} else {
+						t.setSource(e);
+						if (!cardinality.equals(""))
+							t.setCardSource(Integer.parseInt(cardinality));
+					}
+				}
+}
+
+void states(): {}
+{
+	< TK_STATES >
+	":"
+	(state())+
+	{
+		if (!thereIsFinalState) {
+			throw new Error("There is no final state in the protocol.");
+		}
+		
+		if (!thereIsInitialState) {
+			throw new Error("There is no initial state in the protocol.");
+		}
+	}
+}
+
+void state(): {
+  				String idState;
+				Token initialState = null;
+				Token finalState = null;
+				}
+{
+	idState = stateId()
+	(
+	  initialState = < TK_INITIAL >
+	|
+	  finalState = < TK_FINAL >
+	)?
+	";"
+
+	{
+
+	if (!protocolPart || (protocolPart && initialState == null && finalState == null)) {
+		State s = new State(statePrefix+idState+stateSufix, 
+			    			initialState != null, 
+			    			finalState != null);
+
+		if (s.isFinalState())
+			thereIsFinalState = true;
+		
+		if (s.isInitialState()) 
+			thereIsInitialState = true;
+		
+		p.addState(s);
+	} else {
+		if (initialState != null) {
+			mapState.put(statePrefix+idState+stateSufix, stateFrom);
+			thereIsInitialState = true;
+		}
+
+		if (finalState != null) {
+			mapState.put(statePrefix+idState+stateSufix, stateTo);
+			thereIsFinalState = true;
+		}
+	}
+	  
+	}
+}
+
+String stateId(): { Token idState; }
+{
+	idState = < ID >
+				  { return idState.image; }
+}
+
+void participants(): {}
+{  
+	< TK_PARTICIPANTS >
+	":"
+	(participant())+
+}
+
+void participant(): { String id;
+					  String kind;
+					  String roleORtype;
+					  String min = "1";
+					  String max = "1";
+
+					  Token kindT;
+					}
+{
+  
+	id = participantId()
+	(
+		kindT = < TK_AGENT >
+		roleORtype = role()
+		|
+		kindT = < TK_ARTIFACT >
+		roleORtype = type()
+	)
+	(
+	  	max = participantCardinalityAll()
+	 | 
+		(
+		  	min = participantCardinalityMin()
+		  	{ max = "+"; }
+		)?
+		(
+		  	max = participantCardinalityMax()
+		)?
+	)
+	";"
+	{
+	    if (!validateCardinalityConsistence(max,min)) {
+	        throw new Error("Invalid cardinality for participant " + id + ".");
+	    }
+		kind = kindT.image;
+		if (!protocolPart || (protocolPart && !map.containsKey(id) && p.getParticipantByName(id) == null)) {
+			Participant participant;
+			if (max.equals("all") || max.equals("+")) {
+				participant = new Participant(id, roleORtype, kind, Integer.parseInt(min), max);
+			} else {
+				participant = new Participant(id, roleORtype, kind, Integer.parseInt(min), Integer.valueOf(max));
+			}
+			
+			p.addParticipant(participant);
+		}
+	}
+}
+
+String participantId(): { Token id; }
+{
+  
+	id = < ID >
+ 						{ return id.image; }
+}
+
+String type(): { Token type; }
+{
+	type = < STRING >
+			   { return unQuote(type.image); }
+}
+
+String role(): { Token role; }
+{
+	role = < STRING >
+			   { return unQuote(role.image); }
+}
+
+String participantCardinalityMin(): { Token min; }
+{
+  
+	< TK_MIN >
+	min = < INTEGER >
+									 { return min.image; }
+}
+
+String participantCardinalityMax(): { Token max; }
+{
+	< TK_MAX >
+	(
+	  max = < INTEGER >
+	  |
+	  max = < TK_PLUS >
+	)
+
+									{ return max.image; }
+}
+
+String participantCardinalityAll(): { Token max; }
+{
+	  max = < TK_ALL >
+									{ return max.image; }
+}
+
+void description(): { Token description; }
+{
+	[
+		< TK_DESCRIPTION >
+		":"
+		description = < STRING > {
+		  						 if (!protocolPart) {
+		  							 p.setDescription(unQuote(description.image));
+	    		  				 }
+		  						 }
+		";"
+	]
+
+}
+
+void goals(): { String goal; }
+{
+  
+	< TK_GOALS >
+	":"
+	(
+	  goal = goal()    {
+	    			if (!protocolPart) {
+						p.addAchieveGoal(new Goal(goal));
+	    			}
+	  			}
+	)+
+}
+
+String goal(): { Token goal; }
+{
+	goal = < STRING >
+	";"
+			   { return unQuote(goal.image); }
+}

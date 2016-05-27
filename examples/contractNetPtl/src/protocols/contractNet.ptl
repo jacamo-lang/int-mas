@@ -1,0 +1,25 @@
+protocol contractNet {
+	description: "Contract-Net protocol";
+	goals: "g1";
+	participants:
+		player1 agent "client" min 1 max 1;
+		player2 agent "seller" max +;
+
+	states:
+		no1 initial;
+		no2;
+		no3;
+		no4 final; 
+
+	transitions:
+		no1 - no2 # player1 -- message[tell] "cfp(Id,Task)" -> player2
+				  trigger "cfp(Id,Task)" : ".number(Id)";
+		no2 - no3 # timeout 6000;
+		no2 - no3 # player2 -- message[tell] "cfpProposal" -> player1
+				  trigger "refuse(CNPId)" : ".number(CNPId)";
+				  trigger "propose(CNPId,Offer)" : ".number(CNPId) & .number(Offer)";
+		no3 - no4 # player1 -- message[tell] "cfpResult" -> player2
+				  trigger "accept_proposal(CNPId)" : ".number(CNPId)";
+				  trigger "reject_proposal(CNPId)" : ".number(CNPId)";
+}
+
